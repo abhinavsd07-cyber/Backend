@@ -102,3 +102,27 @@ exports.logoutUser = async (req, res) => {
     res.status(500).json({ message: "Logout failed" });
   }
 };
+
+// ─── Refresh Token ─────────────────────────────────────────────────────────────
+exports.refreshToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(400).json({ message: "Refresh token is required" });
+    }
+
+    const response = await axios.post(
+      `${process.env.BASE_URL}/Authentication/refresh-token`,
+      { refreshToken },
+      { headers: { "Content-Type": "application/json" } }
+    );
+
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error("Refresh Token Error:", error.response?.data || error.message);
+    res.status(error.response?.status || 500).json(
+      error.response?.data || { message: "Token refresh failed" }
+    );
+  }
+};
