@@ -12,6 +12,11 @@ app.use(express.json());
 // All auth routes mounted at /api/auth
 app.use("/api/auth", routes);
 
+// Add fallback proxy routing for standard missing API endpoints (Customers, Settings, Dashboard, etc.)
+const { proxyRequest } = require("./controllers/genericController");
+app.use("/api", proxyRequest);
+
+
 // Health check
 app.get("/", (req, res) => {
   res.json({ status: "Server is running", port: PORT });
